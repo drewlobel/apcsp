@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #007bff;
+        }
+        h1 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        h2 {
+            margin-top: 25px;
+        }
+        h3 {
+            margin-top: 20px;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        code {
+            display: block;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #eee;
+            border-left: 5px solid #007bff;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .subsection {
+            margin-left: 20px;
+        }
+        .variable-info {
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 3px;
+        }
+        .function-info {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 3px;
+        }
+        .function-info h4 {
+            color: #28a745;
+            margin-top: 0;
+        }
+        .list-item {
+            margin-bottom: 5px;
+        }
+        .important {
+            font-weight: bold;
+            color: #dc3545;
+        }
+        .code-comment {
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Space Shooter Game Documentation</h1>
+
+    <div class="section">
+        <h2>Overview</h2>
+        <p>This document provides a detailed explanation of the JavaScript code for a simple space shooter game implemented using the HTML5 Canvas API. The game features a player-controlled plane that can shoot bullets at descending enemy planes. The goal is to score as many points as possible by destroying enemies while avoiding collisions. The game includes features like score tracking, increasing difficulty (speed and enemy size reduction), lives, game over state, and a high score list.</p>
+        <p>To run this game, you need to include the provided HTML setup in your HTML file and the JavaScript code in your JavaScript environment that supports HTML5 Canvas and JavaScript.</p>
+    </div>
+
+    <div class="section">
+        <h2>HTML Setup</h2>
+        <p>The following HTML code is required to create the canvas element where the game will be rendered.</p>
+        <code>
+&lt;!-- HTML Setup --&gt;
+&lt;canvas id="gameCanvas" width="400" height="500"&gt;&lt;/canvas&gt;
+        </code>
+        <p>This creates a canvas element with the ID <code>gameCanvas</code>, a width of 400 pixels, and a height of 500 pixels. The JavaScript code will interact with this element to draw the game.</p>
+    </div>
+
+    <div class="section">
+        <h2>JavaScript Code Explanation</h2>
+
+        <h3>1. Canvas and Context Initialization</h3>
+        <div class="subsection">
+            <p>The script starts by getting a reference to the canvas element and its 2D rendering context.</p>
+            <code>
+// Get the canvas element
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// Set background color
+canvas.style.backgroundColor = 'black';
+            </code>
+            <ul>
+                <li class="list-item"><code>canvas</code>: A reference to the HTML canvas element.</li>
+                <li class="list-item"><code>ctx</code>: The 2D rendering context used for drawing shapes, text, and images on the canvas.</li>
+                <li class="list-item">The background color of the canvas is set to black.</li>
+            </ul>
+        </div>
+
+        <h3>2. Game Object Properties</h3>
+        <div class="subsection">
+            <p>This section defines the properties of the player plane, bullets, and enemy planes.</p>
+
+            <h4>Player Plane</h4>
+            <div class="variable-info">
+                <ul>
+                    <li class="list-item"><code>playerPlane.x</code>: The horizontal position of the player plane, initialized to the center of the canvas.</li>
+                    <li class="list-item"><code>playerPlane.y</code>: The vertical position of the player plane, initialized near the bottom of the canvas.</li>
+                    <li class="list-item"><code>playerPlane.size</code>: The size (width and height) of the player plane (a square).</li>
+                    <li class="list-item"><code>playerPlane.color</code>: The color of the player plane (white).</li>
+                    <li class="list-item"><code>playerPlane.speed</code>: The movement speed of the player plane.</li>
+                </ul>
+            </div>
+
+            <h4>Player Bullets</h4>
+            <div class="variable-info">
+                <ul>
+                    <li class="list-item"><code>bullets</code>: An array to store all active player bullets.</li>
+                    <li class="list-item"><code>bulletSpeed</code>: The speed at which bullets travel upwards.</li>
+                    <li class="list-item"><code>bulletSize</code>: The size (width and height) of each bullet (a square).</li>
+                    <li class="list-item"><code>bulletColor</code>: The color of the bullets (yellow).</li>
+                </ul>
+            </div>
+
+            <h4>Enemy Planes</h4>
+            <div class="variable-info">
+                <ul>
+                    <li class="list-item"><code>enemyPlanes</code>: An array to store all active enemy planes.</li>
+                    <li class="list-item"><code>initialEnemySize</code>: The base initial size of the enemy planes.</li>
+                    <li class="list-item"><code>enemySizeMultiplier</code>: A multiplier to make the initial enemy size larger.</li>
+                    <li class="list-item"><code>enemySize</code>: The current size of the enemy planes, which can decrease over time.</li>
+                    <li class="list-item"><code>enemySizeReductionRate</code>: The percentage by which the enemy size reduces after reaching a certain score.</li>
+                    <li class="list-item"><code>pointsForEnemySizeReduction</code>: The score increment needed to trigger an enemy size reduction.</li>
+                    <li class="list-item"><code>initialEnemySpeed</code>: The base initial speed of the enemy planes.</li>
+                    <li class="list-item"><code>currentBaseEnemySpeed</code>: The current base speed of the enemy planes, which can increase over time.</li>
+                    <li class="list-item"><code>enemyColor</code>: The color of the enemy planes (orangered).</li>
+                </ul>
+            </div>
+
+            <h4>Player Lives</h4>
+            <div class="variable-info">
+                <ul>
+                    <li class="list-item"><code>lives</code>: The number of lives the player has, initialized to 3.</li>
+                    <li class="list-item"><code>maxLives</code>: The maximum number of lives the player can have.</li>
+                    <li class="list-item"><code>heartSize</code>: The size of the heart icon used to display lives.</li>
+                    <li class="list-item"><code>heartSpacing</code>: The spacing between the heart icons.</li>
+                </ul>
+            </div>
+
+            <h4>High Score</h4>
+            <div class="variable-info">
+                <ul>
+                    <li class="list-item"><code>highScoreList</code>: An array to store all achieved game scores.</li>
+                </ul>
+            </div>
+
+            <h4>Game State</h4>
+            <div class="variable-info">
+                <ul>
+                    <li class="list-item"><code>score</code>: The player's current score, initialized to 0.</li>
+                    <li class="list-item"><code>gameSpeedMultiplier</code>: A multiplier to increase the game speed, initialized to 1.</li>
+                    <li class="list-item"><code>lastFrameTime</code>: The timestamp of the last animation frame, used to calculate <code>deltaTime</code>.</li>
+                    <li class="list-item"><code>pointsForSpeedIncrease</code>: The score increment needed to trigger a game speed increase.</li>
+                    <li class="list-item"><code>speedIncreaseAmount</code>: The amount by which the game speed multiplier increases.</li>
+                    <li class="list-item"><code>enemySpawnInterval</code>: The interval (in milliseconds) between enemy plane spawns, initially 1000ms.</li>
+                    <li class="list-item"><code>initialEnemySpawnInterval</code>: The initial value of the enemy spawn interval.</li>
+                    <li class="list-item"><code>lastEnemySpawnTime</code>: The timestamp of the last enemy plane spawn.</li>
+                    <li class="list-item"><code>gameOver</code>: A boolean indicating whether the game is over, initialized to <code>false</code>.</li>
+                    <li class="list-item"><code>keys</code>: An object to track which keyboard keys are currently pressed.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>3. Helper Functions</h3>
+        <div class="subsection">
+
+            <div class="function-info">
+                <h4><code>getRandomNumber(min, max)</code></h4>
+                <p>Returns a random number within the specified range (inclusive of <code>min</code>, exclusive of <code>max</code>).</p>
+                <ul>
+                    <li class="list-item"><code>min</code>: The minimum value of the range.</li>
+                    <li class="list-item"><code>max</code>: The maximum value of the range.</li>
+                    <li class="list-item"><strong>Returns:</strong> A random number between <code>min</code> and <code>max</code>.</li>
+                </ul>
+                <code>
+function getRandomNumber(min, max) {
+    return Math.random() * (max - min) + min;
+}
+                </code>
+            </div>
+
+            <div class="function-info">
+                <h4><code>createEnemyPlane()</code></h4>
+                <p>Creates a new enemy plane with a random horizontal position at the top of the canvas and adds it to the <code>enemyPlanes</code> array. The enemy's speed is determined by the <code>currentBaseEnemySpeed</code> and <code>gameSpeedMultiplier</code>.</p>
+                <code>
+function createEnemyPlane() {
+    const x = getRandomNumber(0, canvas.width - enemySize);
+    const y = -enemySize;
+    const speed = currentBaseEnemySpeed * gameSpeedMultiplier;
+    enemyPlanes.push({ x, y, size: enemySize, speed, color: enemyColor, alive: true });
+}
+                </code>
+            </div>
+
+            <div class="function-info">
+                <h4><code>updateEnemyPlanes(deltaTime)</code></h4>
+                <p>Updates the position of each active enemy plane, making them move downwards. If an enemy goes off-screen, the player loses a life. If the player runs out of lives, the <code>endRound()</code> function is called.</p>
+                <ul>
+                    <li class="list-item"><code>deltaTime</code>: The time elapsed since the last frame (in seconds), used for smooth animation.</li>
+                </ul>
+                <code>
+function updateEnemyPlanes(deltaTime) {
+    for (let i = 0; i &lt; enemyPlanes.length; i++) {
+        if (enemyPlanes[i].alive) {
+            enemyPlanes[i].y += enemyPlanes[i].speed * deltaTime;
+
+            if (enemyPlanes[i].y &gt; canvas.height + enemySize) {
+                lives--;
+                enemyPlanes.splice(i, 1);
+                i--;
+                console.log("Missed an enemy! Lives left:", lives);
+                if (lives &lt;= 0) {
+                    endRound();
+                }
+            }
+        } else {
+            enemyPlanes.splice(i, 1);
+            i--;
+        }
+    }
+}
+                </code>
+            </div>
+
+            <div class="function-info">
+                <h4><code>createBullet(x = playerPlane.x, y = playerPlane.y - playerPlane.size / 2 - bulletSize / 2)</code></h4>
+                <p>Creates a new bullet originating from the player's plane and adds it to the <code>bullets</code> array. The bullet's initial position is slightly above the player plane.</p>
+                <ul>
+                    <li class="list-item"><code>x</code> (optional): The horizontal starting position of the bullet. Defaults to the player's x-coordinate.</li>
+                    <li class="list-item"><code>y</code> (optional): The vertical starting position of the bullet. Defaults to a position above the player.</li>
+                </ul>
+                <code>
+function createBullet(x = playerPlane.x, y = playerPlane.y - playerPlane.size / 2 - bulletSize / 2) {
+    if (!gameOver) {
+        bullets.push({ x: x, y: y, size: bulletSize, speed: bulletSpeed, color: bulletColor });
+    }
+}
+                </code>
+            </div>
+
+            <div class="function-info">
+                <h4><code>updateBullets(deltaTime)</code></h4>
+                <p>Updates the position of each bullet, making them move upwards. If a bullet goes off-screen, it is removed from the <code>bullets</code> array.</p>
+                <ul>
+                    <li class="list-item"><code>deltaTime</code>: The time elapsed since the last frame.</li>
+                </ul>
+                <code>
+function updateBullets(deltaTime) {
+    for (let i = 0; i &lt; bullets.length; i++) {
+        bullets[i].y -= bullets[i].speed * deltaTime * 100;
+
+        if (bullets[i].y &lt; -bullets[i].size) {
+            bullets.splice(i, 1);
+            i--;
+        }
+    }
+}
+                </code>
+            </div>
+
+            <div class="function-info">
+                <h4><code>checkBulletCollisions()</code></h4>
+                <p>Checks for collisions between player bullets and enemy planes. If a collision occurs, the bullet is removed, the enemy is marked as not alive (and removed in the next update), and the player's score is increased. This function also handles increasing game speed and reducing enemy size based on the score.</p>
+                <code>
+function checkBulletCollisions() {
+    for (let i = 0; i &lt; bullets.length; i++) {
+        for (let j = 0; j &lt; enemyPlanes.length; j++) {
+            if (enemyPlanes[j].alive) {
+                const bullet = bullets[i];
+                const enemy = enemyPlanes[j];
+
+                if (
+                    bullet.x &gt; enemy.x &&
+                    bullet.x &lt; enemy.x + enemy.size &&
+                    bullet.y &gt; enemy.y &&
+                    bullet.y &lt; enemy.y + enemy.size
+                ) {
+                    bullets.splice(i, 1);
+                    i--;
+                    enemyPlanes[j].alive = false;
+                    score += 10; // Increment score here
+
+                    // Check for speed increase after scoring
+                    if (!gameOver && score * 10 &gt; 0 && (score * 10) % pointsForSpeedIncrease === 0) {
+                        gameSpeedMultiplier += speedIncreaseAmount;
+                        console.log(`Game speed multiplier increased to ${gameSpeedMultiplier.toFixed(2)}x!`);
+                    }
+
+                    // Check for enemy size reduction
+                    if (!gameOver && score * 10 &gt; 0 && (score * 10) % pointsForEnemySizeReduction === 0) {
+                        enemySize *= (1 - enemySizeReductionRate);
+                        enemySize = Math.max(5, enemySize); // Ensure enemy size doesn't get too small
+                        console.log(`Enemy size reduced to ${enemySize.toFixed(2)}!`);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+}
+                </code>
+            </div>
+
+            <div class="function-info">
+                <h4><code>checkCollisions()</code></h4>
+                <p>Checks for collisions between the player plane and any active enemy planes. If a collision occurs, the player loses a life, and the enemy is removed. If the player runs out of lives, <code>endRound()</code> is called.</p>
+                <p><span class="important">Note:</span> This function returns <code>true</code> if a collision occurs, but the return value is not currently used in the main game loop.</p>
+                <code>
+function checkCollisions() {
+    for (let i = 0; i &lt; enemyPlanes.length; i++) {
+        if (enemyPlanes[i].alive) {
+            const enemy = enemyPlanes[i];
+            const dx = playerPlane.x - (enemy.x + enemy.size / 2);
+            const dy = playerPlane.y - (enemy.y + enemy.size / 2);
+            const distance = Math.sqrt(dx * dx + dy *
