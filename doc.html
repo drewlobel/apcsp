@@ -3,346 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentation</title>
+    <title>CodeHS JavaScript Game Documentation</title>
     <style>
         body {
             font-family: sans-serif;
             line-height: 1.6;
             margin: 20px;
-            background-color: #f4f4f4;
-            color: #333;
+            background-color: #f8f9fa;
+            color: #343a40;
         }
         h1, h2, h3 {
             color: #007bff;
         }
-        h1 {
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
         h2 {
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
             margin-top: 25px;
         }
         h3 {
             margin-top: 20px;
         }
-        p {
-            margin-bottom: 15px;
-        }
-        code {
-            display: block;
+        pre {
+            background-color: #e9ecef;
             padding: 10px;
-            margin: 10px 0;
-            background-color: #eee;
-            border-left: 5px solid #007bff;
+            border-radius: 5px;
             overflow-x: auto;
             font-family: monospace;
         }
+        code {
+            font-family: monospace;
+            color: #28a745;
+        }
         .section {
             margin-bottom: 30px;
-            padding: 15px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
         }
-        .subsection {
+        .variable-info, .function-info {
             margin-left: 20px;
-        }
-        .variable-info {
             margin-bottom: 10px;
-            padding: 8px;
-            background-color: #f9f9f9;
-            border: 1px solid #eee;
-            border-radius: 3px;
         }
-        .function-info {
-            margin-bottom: 15px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #eee;
-            border-radius: 3px;
-        }
-        .function-info h4 {
-            color: #28a745;
-            margin-top: 0;
-        }
-        .list-item {
-            margin-bottom: 5px;
-        }
-        .important {
+        .variable-name, .function-name {
             font-weight: bold;
-            color: #dc3545;
+            color: #0056b3;
         }
-        .code-comment {
-            color: #6c757d;
+        .parameter-name {
             font-style: italic;
+            color: #6c757d;
+        }
+        .code-block-title {
+            font-weight: bold;
+            margin-top: 15px;
+            color: #17a2b8;
+        }
+        .console-interaction {
+            background-color: #f0f8ff;
+            padding: 10px;
+            border-left: 5px solid #007bff;
+            margin-top: 15px;
+        }
+        .console-command {
+            font-family: monospace;
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .console-output {
+            font-family: monospace;
+            color: #28a745;
         }
     </style>
 </head>
 <body>
-    <h1>Space Shooter Game Documentation</h1>
+    <h1>CodeHS JavaScript Game Documentation</h1>
 
     <div class="section">
-        <h2>Overview</h2>
-        <p>This document provides a detailed explanation of the JavaScript code for a simple space shooter game implemented using the HTML5 Canvas API. The game features a player-controlled plane that can shoot bullets at descending enemy planes. The goal is to score as many points as possible by destroying enemies while avoiding collisions. The game includes features like score tracking, increasing difficulty (speed and enemy size reduction), lives, game over state, and a high score list.</p>
-        <p>To run this game, you need to include the provided HTML setup in your HTML file and the JavaScript code in your JavaScript environment that supports HTML5 Canvas and JavaScript.</p>
+        <h2>Introduction</h2>
+        <p>This document explains the JavaScript code for a simplified top-down space shooter game designed to run within the CodeHS JavaScript console environment. Due to the limitations of the console, the game does not have a graphical output but instead provides feedback and requires input through console commands.</p>
     </div>
 
     <div class="section">
-        <h2>HTML Setup</h2>
-        <p>The following HTML code is required to create the canvas element where the game will be rendered.</p>
-        <code>
-&lt;!-- HTML Setup --&gt;
-&lt;canvas id="gameCanvas" width="400" height="500"&gt;&lt;/canvas&gt;
-        </code>
-        <p>This creates a canvas element with the ID <code>gameCanvas</code>, a width of 400 pixels, and a height of 500 pixels. The JavaScript code will interact with this element to draw the game.</p>
+        <h2>Game Setup and Configuration</h2>
+
+        <h3>Configuration Variables</h3>
+        <p>These variables at the beginning of the script define the fundamental settings of the game.</p>
+        <ul>
+            <li>
+                <h4 class="variable-name">canvasWidth</h4>
+                <p>The simulated width of the game area in the console (<code>400</code>).</p>
+            </li>
+            <li>
+                <h4 class="variable-name">canvasHeight</h4>
+                <p>The simulated height of the game area in the console (<code>300</code>).</p>
+            </li>
+            <li>
+                <h4 class="variable-name">backgroundColor</h4>
+                <p>The simulated background color of the game (<code>'black'</code>).</p>
+            </li>
+            <li>
+                <h4 class="variable-name">playerPlaneConfig</h4>
+                <p>An object containing the initial configuration for the player's plane:</p>
+                <ul class="variable-info">
+                    <li><span class="variable-name">startX</span>: The initial horizontal position.</li>
+                    <li><span class="variable-name">startY</span>: The initial vertical position.</li>
+                    <li><span class="variable-name">size</span>: The size of the player's plane.</li>
+                    <li><span class="variable-name">color</span>: The color of the player's plane.</li>
+                    <li><span class="variable-name">speed</span>: The horizontal movement speed.</li>
+                </ul>
+            </li>
+            <li>
+                <h4 class="variable-name">bulletConfig</h4>
+                <p>An object containing the configuration for the player's bullets:</p>
+                <ul class="variable-info">
+                    <li><span class="variable-name">speed</span>: The speed of the bullets.</li>
+                    <li><span class="variable-name">size</span>: The size of the bullets.</li>
+                    <li><span class="variable-name">color</span>: The color of the bullets.</li>
+                </ul>
+            </li>
+            <li>
+                <h4 class="variable-name">enemyConfig</h4>
+                <p>An object containing the configuration for the enemy planes:</p>
+                <ul class="variable-info">
+                    <li><span class="variable-name">initialSize</span>: The initial size of the enemies.</li>
+                    <li><span class="variable-name">sizeMultiplier</span>: A multiplier for the initial size.</li>
+                    <li><span class="variable-name">sizeReductionRate</span>: The rate at which enemy size decreases.</li>
+                    <li><span class="variable-name">pointsForSizeReduction</span>: The score needed to trigger enemy size reduction.</li>
+                    <li><span class="variable-name">initialSpeed</span>: The initial speed of the enemies.</li>
+                    <li><span class="variable-name">color</span>: The color of the enemies.</li>
+                    <li><span class="variable-name">spawnInterval</span>: The time interval (in milliseconds) between enemy spawns.</li>
+                </ul>
+            </li>
+            <li>
+                <h4 class="variable-name">lifeConfig</h4>
+                <p>An object containing the configuration for player lives:</p>
+                <ul class="variable-info">
+                    <li><span class="variable-name">initialLives</span>: The number of lives the player starts with.</li>
+                    <li><span class="variable-name">maxLives</span>: The maximum number of lives.</li>
+                    <li><span class="variable-name">heartSize</span>: The simulated size of a life indicator.</li>
+                    <li><span class="variable-name">heartSpacing</span>: The simulated spacing between life indicators.</li>
+                </ul>
+            </li>
+            <li>
+                <h4 class="variable-name">speedConfig</h4>
+                <p>An object containing the configuration for game speed increase:</p>
+                <ul class="variable-info">
+                    <li><span class="variable-name">pointsForIncrease</span>: The score needed to increase game speed.</li>
+                    <li><span class="variable-name">increaseAmount</span>: The amount by which the game speed increases.</li>
+                </ul>
+            </li>
+        </ul>
     </div>
 
     <div class="section">
-        <h2>JavaScript Code Explanation</h2>
+        <h2>Game State Variables</h2>
+        <p>These variables hold the current state of the game during gameplay.</p>
+        <ul>
+            <li><h4 class="variable-name">playerPlane</h4>: An object representing the player's plane with its current properties (position, size, color, speed).</li>
+            <li><h4 class="variable-name">bullets</h4>: An array storing all currently active player bullets.</li>
+            <li><h4 class="variable-name">enemyPlanes</h4>: An array storing all currently active enemy planes.</li>
+            <li><h4 class="variable-name">enemySize</h4>: The current size of the enemy planes, which can change during the game.</li>
+            <li><h4 class="variable-name">currentBaseEnemySpeed</h4>: The current base speed of the enemy planes, which can be affected by the game speed multiplier.</li>
+            <li><h4 class="variable-name">lives</h4>: The number of lives the player currently has.</li>
+            <li><h4 class="variable-name">maxLives</h4>: The maximum number of lives the player can have.</li>
+            <li><h4 class="variable-name">highScoreList</h4>: An array to store all the scores from completed games.</li>
+            <li><h4 class="variable-name">score</h4>: The player's current score.</li>
+            <li><h4 class="variable-name">gameSpeedMultiplier</h4>: A multiplier that increases the speed of various game elements.</li>
+            <li><h4 class="variable-name">lastFrameTime</h4>: The timestamp of the last game update, used for calculating the time difference between frames.</li>
+            <li><h4 class="variable-name">lastEnemySpawnTime</h4>: The timestamp of the last enemy plane spawn.</li>
+            <li><h4 class="variable-name">gameOver</h4>: A boolean indicating whether the game is currently over.</li>
+            <li><h4 class="variable-name">keys</h4>: An object used to simulate key presses for controlling the player in the console environment.</li>
+        </ul>
+    </div>
 
-        <h3>1. Canvas and Context Initialization</h3>
-        <div class="subsection">
-            <p>The script starts by getting a reference to the canvas element and its 2D rendering context.</p>
-            <code>
-// Get the canvas element
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+    <div class="section">
+        <h2>Functions Explained</h2>
 
-// Set background color
-canvas.style.backgroundColor = 'black';
-            </code>
-            <ul>
-                <li class="list-item"><code>canvas</code>: A reference to the HTML canvas element.</li>
-                <li class="list-item"><code>ctx</code>: The 2D rendering context used for drawing shapes, text, and images on the canvas.</li>
-                <li class="list-item">The background color of the canvas is set to black.</li>
-            </ul>
+        <h3>1. Helper Function</h3>
+        <ul>
+            <li>
+                <h4 class="function-name">getRandomNumber(<span class="parameter-name">min</span>, <span class="parameter-name">max</span>)</h4>
+                <p>Returns a random floating-point number between <code>min</code> (inclusive) and <code>max</code> (exclusive). Used for determining the initial horizontal position of enemy planes.</p>
+            </li>
+        </ul>
+
+        <h3>2. Enemy Management Functions</h3>
+        <ul>
+            <li>
+                <h4 class="function-name">createEnemyPlane()</h4>
+                <p>Creates a new enemy plane with a random horizontal position near the top of the simulated game area. Its vertical position is initially off-screen. The enemy's speed is determined by the <code>currentBaseEnemySpeed</code> multiplied by the <code>gameSpeedMultiplier</code>. The new enemy is added to the <code>enemyPlanes</code> array.</p>
+            </li>
+            <li>
+                <h4 class="function-name">updateEnemyPlanes(<span class="parameter-name">deltaTime</span>)</h4>
+                <p>Updates the vertical position of each active enemy plane in the <code>enemyPlanes</code> array based on its <code>speed</code> and the time elapsed since the last update (<code>deltaTime</code>). If an enemy moves beyond the bottom of the simulated game area, the player loses a life, the enemy is removed from the array, and if the player's lives reach zero, the <code>endRound()</code> function is called.</p>
+            </li>
+        </ul>
+
+        <h3>3. Bullet Management Functions</h3>
+        <ul>
+            <li>
+                <h4 class="function-name">createBullet(<span class="parameter-name">x</span>, <span class="parameter-name">y</span>)</h4>
+                <p>Creates a new bullet object at the specified <code>x</code> and <code>y</code> coordinates (defaults to the player's current position). The bullet's properties (<code>size</code>, <code>speed</code>, <code>color</code>) are determined by the <code>bulletConfig</code>. The new bullet is added to the <code>bullets</code> array, but only if the game is not over.</p>
+            </li>
+            <li>
+                <h4 class="function-name">updateBullets(<span class="parameter-name">deltaTime</span>)</h4>
+                <p>Updates the vertical position of each active bullet in the <code>bullets</code> array. Bullets move upwards based on their <code>speed</code> and the <code>deltaTime</code>. If a bullet moves beyond the top of the simulated game area, it is removed from the <code>bullets</code> array.</p>
+            </li>
+        </ul>
+
+        <h3>4. Collision Detection Functions</h3>
+        <ul>
+            <li>
+                <h4 class="function-name">checkBulletCollisions()</h4>
+                <p>Iterates through each active bullet and each active enemy plane to check if they are overlapping. If a collision is detected:</p>
+                <ul>
+                    <li>The bullet is removed from the <code>bullets</code> array.</li>
+                    <li>The <code>alive</code> property of the enemy plane is set to <code>false</code>, marking it for removal in the next update.</li>
+                    <li>The player's <code>score</code> is increased.</li>
+                    <li>The game checks if the score has reached thresholds to increase the <code>gameSpeedMultiplier</code> or reduce the <code>enemySize</code>.</li>
+                </ul>
+            </li>
+            <li>
+                <h4 class="function-name">checkCollisions()</h4>
+                <p>Checks for collisions between the player's plane and any active enemy planes. A simple distance-based check is used. If a collision occurs:</p>
+                <ul>
+                    <li>The player loses a <code>life</code>.</li>
+                    <li>The colliding enemy plane is removed from the <code>enemyPlanes</code> array.</li>
+                    <li>If the player's <code>lives</code> reach zero, the <code>endRound()</code> function is called.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>5. Utility Function</h3>
+        <ul>
+            <li>
+                <h4 class="function-name">calculateAverageScore()</h4>
+                <p>Calculates and returns the average of all scores stored in the <code>highScoreList</code>. Returns <code>0</code> if the list is empty.</p>
+            </li>
+        </ul>
+
+        <h3>6. Game Update Functions</h3>
+        <ul>
+            <li>
+                <h4 class="function-name">updatePlayer(<span class="parameter-name">deltaTime</span>)</h4>
+                <p>Updates the horizontal position of the player's plane based on the state of the simulated key presses in the <code>keys</code> object. If the <code>'ArrowLeft'</code> key is "pressed" (set to <code>true</code>), the player moves left; if <code>'ArrowRight'</code> is "pressed," the player moves right. The player's movement is also constrained within the simulated game boundaries.</p>
+            </li>
+            <li>
+                <h4 class="function-name">updateGame(<span class="parameter-name">currentTime</span>)</h4>
+                <p>This is the core game loop function. It performs the following actions in each iteration:</p>
+                <ul>
+                    <li>Calculates the <code>deltaTime</code> (time elapsed since the last update).</li>
+                    <li>Updates the player's position using <code>updatePlayer()</code>.</li>
+                    <li>Updates the positions of all enemy planes using <code>updateEnemyPlanes()</code>.</li>
+                    <li>Updates the positions of all bullets using <code>updateBullets()</code>.</li>
+                    <li>Checks for collisions between bullets and enemies using <code>checkBulletCollisions()</code>.</li>
+                    <li>Checks for collisions between the player and enemies using <code>checkCollisions()</code>.</li>
+                    <li>Clears the CodeHS console.</li>
+                    <li>Prints the current game state (score, speed, lives, positions, counts) to the console.</li>
+                </ul>
+                <p>This function simulates an animation loop using <code>setTimeout</code>, as <code>requestAnimationFrame</code> is not directly applicable in the CodeHS console environment. The frame rate is reduced for compatibility.</p>
+            </li>
+        </ul>
+
+        <h3>7. Game State Control Functions</h3>
+        <ul>
+            <li>
+                <h4 class="function-name">endRound()</h4>
+                <p>Sets the <code>gameOver</code> flag to <code>true</code> and adds the current <code>score</code> to the <code>highScoreList</code>.</p>
+            </li>
+            <li>
+                <h4 class="function-name">resetGame()</h4>
+                <p>Resets all relevant game state variables to their initial values, effectively starting a new game. This includes setting <code>gameOver</code> to <code>false</code>, resetting <code>score</code> and <code>lives</code>, and clearing the <code>bullets</code> and <code>enemyPlanes</code> arrays. It also prints a "Game reset." message to the console.</p>
+            </li>
+        </ul>
+
+        <h3>8. Enemy Spawning Function</h3>
+        <ul>
+            <li>
+                <h4 class="function-name">spawnEnemies()</h4>
+                <p>Checks if the game is not over and if enough time has passed since the last enemy spawn (based on <code>enemyConfig.spawnInterval</code>). If both conditions are true, it calls <code>createEnemyPlane()</code> to create a new enemy and updates the <code>lastEnemySpawnTime</code>. This function uses <code>setTimeout</code> to periodically check for the need to spawn new enemies.</p>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Simulating Input in CodeHS Console</h2>
+        <p>Due to the text-based nature of the CodeHS console, direct graphical input (like mouse clicks or key presses on a canvas) is not available. Instead, you control the game by directly manipulating the <code>keys</code> object in the console.</p>
+        <div class="console-interaction">
+            <p><span class="console-command">To move left:</span> Type <code>keys['ArrowLeft'] = true;</code> and press Enter. To stop, type <code>keys['ArrowLeft'] = false;</code> and press Enter.</p>
+            <p><span class="console-command">To move right:</span> Type <code>keys['ArrowRight'] = true;</code> and press Enter. To stop, type <code>keys['ArrowRight'] = false;</code> and press Enter.</p>
+            <p><span class="console-command">To shoot:</span> Type <code>keys[' '] = true;</code> and press Enter, then immediately type <code>keys[' '] = false;</code> and press Enter.</p>
+            <p><span class="console-command">To restart after Game Over:</span> Type <code>keys[' '] = true;</code> and press Enter, then type <code>keys[' '] = false;</code> and press Enter.</p>
         </div>
+    </div>
 
-        <h3>2. Game Object Properties</h3>
-        <div class="subsection">
-            <p>This section defines the properties of the player plane, bullets, and enemy planes.</p>
-
-            <h4>Player Plane</h4>
-            <div class="variable-info">
-                <ul>
-                    <li class="list-item"><code>playerPlane.x</code>: The horizontal position of the player plane, initialized to the center of the canvas.</li>
-                    <li class="list-item"><code>playerPlane.y</code>: The vertical position of the player plane, initialized near the bottom of the canvas.</li>
-                    <li class="list-item"><code>playerPlane.size</code>: The size (width and height) of the player plane (a square).</li>
-                    <li class="list-item"><code>playerPlane.color</code>: The color of the player plane (white).</li>
-                    <li class="list-item"><code>playerPlane.speed</code>: The movement speed of the player plane.</li>
-                </ul>
-            </div>
-
-            <h4>Player Bullets</h4>
-            <div class="variable-info">
-                <ul>
-                    <li class="list-item"><code>bullets</code>: An array to store all active player bullets.</li>
-                    <li class="list-item"><code>bulletSpeed</code>: The speed at which bullets travel upwards.</li>
-                    <li class="list-item"><code>bulletSize</code>: The size (width and height) of each bullet (a square).</li>
-                    <li class="list-item"><code>bulletColor</code>: The color of the bullets (yellow).</li>
-                </ul>
-            </div>
-
-            <h4>Enemy Planes</h4>
-            <div class="variable-info">
-                <ul>
-                    <li class="list-item"><code>enemyPlanes</code>: An array to store all active enemy planes.</li>
-                    <li class="list-item"><code>initialEnemySize</code>: The base initial size of the enemy planes.</li>
-                    <li class="list-item"><code>enemySizeMultiplier</code>: A multiplier to make the initial enemy size larger.</li>
-                    <li class="list-item"><code>enemySize</code>: The current size of the enemy planes, which can decrease over time.</li>
-                    <li class="list-item"><code>enemySizeReductionRate</code>: The percentage by which the enemy size reduces after reaching a certain score.</li>
-                    <li class="list-item"><code>pointsForEnemySizeReduction</code>: The score increment needed to trigger an enemy size reduction.</li>
-                    <li class="list-item"><code>initialEnemySpeed</code>: The base initial speed of the enemy planes.</li>
-                    <li class="list-item"><code>currentBaseEnemySpeed</code>: The current base speed of the enemy planes, which can increase over time.</li>
-                    <li class="list-item"><code>enemyColor</code>: The color of the enemy planes (orangered).</li>
-                </ul>
-            </div>
-
-            <h4>Player Lives</h4>
-            <div class="variable-info">
-                <ul>
-                    <li class="list-item"><code>lives</code>: The number of lives the player has, initialized to 3.</li>
-                    <li class="list-item"><code>maxLives</code>: The maximum number of lives the player can have.</li>
-                    <li class="list-item"><code>heartSize</code>: The size of the heart icon used to display lives.</li>
-                    <li class="list-item"><code>heartSpacing</code>: The spacing between the heart icons.</li>
-                </ul>
-            </div>
-
-            <h4>High Score</h4>
-            <div class="variable-info">
-                <ul>
-                    <li class="list-item"><code>highScoreList</code>: An array to store all achieved game scores.</li>
-                </ul>
-            </div>
-
-            <h4>Game State</h4>
-            <div class="variable-info">
-                <ul>
-                    <li class="list-item"><code>score</code>: The player's current score, initialized to 0.</li>
-                    <li class="list-item"><code>gameSpeedMultiplier</code>: A multiplier to increase the game speed, initialized to 1.</li>
-                    <li class="list-item"><code>lastFrameTime</code>: The timestamp of the last animation frame, used to calculate <code>deltaTime</code>.</li>
-                    <li class="list-item"><code>pointsForSpeedIncrease</code>: The score increment needed to trigger a game speed increase.</li>
-                    <li class="list-item"><code>speedIncreaseAmount</code>: The amount by which the game speed multiplier increases.</li>
-                    <li class="list-item"><code>enemySpawnInterval</code>: The interval (in milliseconds) between enemy plane spawns, initially 1000ms.</li>
-                    <li class="list-item"><code>initialEnemySpawnInterval</code>: The initial value of the enemy spawn interval.</li>
-                    <li class="list-item"><code>lastEnemySpawnTime</code>: The timestamp of the last enemy plane spawn.</li>
-                    <li class="list-item"><code>gameOver</code>: A boolean indicating whether the game is over, initialized to <code>false</code>.</li>
-                    <li class="list-item"><code>keys</code>: An object to track which keyboard keys are currently pressed.</li>
-                </ul>
-            </div>
-        </div>
-
-        <h3>3. Helper Functions</h3>
-        <div class="subsection">
-
-            <div class="function-info">
-                <h4><code>getRandomNumber(min, max)</code></h4>
-                <p>Returns a random number within the specified range (inclusive of <code>min</code>, exclusive of <code>max</code>).</p>
-                <ul>
-                    <li class="list-item"><code>min</code>: The minimum value of the range.</li>
-                    <li class="list-item"><code>max</code>: The maximum value of the range.</li>
-                    <li class="list-item"><strong>Returns:</strong> A random number between <code>min</code> and <code>max</code>.</li>
-                </ul>
-                <code>
-function getRandomNumber(min, max) {
-    return Math.random() * (max - min) + min;
-}
-                </code>
-            </div>
-
-            <div class="function-info">
-                <h4><code>createEnemyPlane()</code></h4>
-                <p>Creates a new enemy plane with a random horizontal position at the top of the canvas and adds it to the <code>enemyPlanes</code> array. The enemy's speed is determined by the <code>currentBaseEnemySpeed</code> and <code>gameSpeedMultiplier</code>.</p>
-                <code>
-function createEnemyPlane() {
-    const x = getRandomNumber(0, canvas.width - enemySize);
-    const y = -enemySize;
-    const speed = currentBaseEnemySpeed * gameSpeedMultiplier;
-    enemyPlanes.push({ x, y, size: enemySize, speed, color: enemyColor, alive: true });
-}
-                </code>
-            </div>
-
-            <div class="function-info">
-                <h4><code>updateEnemyPlanes(deltaTime)</code></h4>
-                <p>Updates the position of each active enemy plane, making them move downwards. If an enemy goes off-screen, the player loses a life. If the player runs out of lives, the <code>endRound()</code> function is called.</p>
-                <ul>
-                    <li class="list-item"><code>deltaTime</code>: The time elapsed since the last frame (in seconds), used for smooth animation.</li>
-                </ul>
-                <code>
-function updateEnemyPlanes(deltaTime) {
-    for (let i = 0; i &lt; enemyPlanes.length; i++) {
-        if (enemyPlanes[i].alive) {
-            enemyPlanes[i].y += enemyPlanes[i].speed * deltaTime;
-
-            if (enemyPlanes[i].y &gt; canvas.height + enemySize) {
-                lives--;
-                enemyPlanes.splice(i, 1);
-                i--;
-                console.log("Missed an enemy! Lives left:", lives);
-                if (lives &lt;= 0) {
-                    endRound();
-                }
-            }
-        } else {
-            enemyPlanes.splice(i, 1);
-            i--;
-        }
-    }
-}
-                </code>
-            </div>
-
-            <div class="function-info">
-                <h4><code>createBullet(x = playerPlane.x, y = playerPlane.y - playerPlane.size / 2 - bulletSize / 2)</code></h4>
-                <p>Creates a new bullet originating from the player's plane and adds it to the <code>bullets</code> array. The bullet's initial position is slightly above the player plane.</p>
-                <ul>
-                    <li class="list-item"><code>x</code> (optional): The horizontal starting position of the bullet. Defaults to the player's x-coordinate.</li>
-                    <li class="list-item"><code>y</code> (optional): The vertical starting position of the bullet. Defaults to a position above the player.</li>
-                </ul>
-                <code>
-function createBullet(x = playerPlane.x, y = playerPlane.y - playerPlane.size / 2 - bulletSize / 2) {
-    if (!gameOver) {
-        bullets.push({ x: x, y: y, size: bulletSize, speed: bulletSpeed, color: bulletColor });
-    }
-}
-                </code>
-            </div>
-
-            <div class="function-info">
-                <h4><code>updateBullets(deltaTime)</code></h4>
-                <p>Updates the position of each bullet, making them move upwards. If a bullet goes off-screen, it is removed from the <code>bullets</code> array.</p>
-                <ul>
-                    <li class="list-item"><code>deltaTime</code>: The time elapsed since the last frame.</li>
-                </ul>
-                <code>
-function updateBullets(deltaTime) {
-    for (let i = 0; i &lt; bullets.length; i++) {
-        bullets[i].y -= bullets[i].speed * deltaTime * 100;
-
-        if (bullets[i].y &lt; -bullets[i].size) {
-            bullets.splice(i, 1);
-            i--;
-        }
-    }
-}
-                </code>
-            </div>
-
-            <div class="function-info">
-                <h4><code>checkBulletCollisions()</code></h4>
-                <p>Checks for collisions between player bullets and enemy planes. If a collision occurs, the bullet is removed, the enemy is marked as not alive (and removed in the next update), and the player's score is increased. This function also handles increasing game speed and reducing enemy size based on the score.</p>
-                <code>
-function checkBulletCollisions() {
-    for (let i = 0; i &lt; bullets.length; i++) {
-        for (let j = 0; j &lt; enemyPlanes.length; j++) {
-            if (enemyPlanes[j].alive) {
-                const bullet = bullets[i];
-                const enemy = enemyPlanes[j];
-
-                if (
-                    bullet.x &gt; enemy.x &&
-                    bullet.x &lt; enemy.x + enemy.size &&
-                    bullet.y &gt; enemy.y &&
-                    bullet.y &lt; enemy.y + enemy.size
-                ) {
-                    bullets.splice(i, 1);
-                    i--;
-                    enemyPlanes[j].alive = false;
-                    score += 10; // Increment score here
-
-                    // Check for speed increase after scoring
-                    if (!gameOver && score * 10 &gt; 0 && (score * 10) % pointsForSpeedIncrease === 0) {
-                        gameSpeedMultiplier += speedIncreaseAmount;
-                        console.log(`Game speed multiplier increased to ${gameSpeedMultiplier.toFixed(2)}x!`);
-                    }
-
-                    // Check for enemy size reduction
-                    if (!gameOver && score * 10 &gt; 0 && (score * 10) % pointsForEnemySizeReduction === 0) {
-                        enemySize *= (1 - enemySizeReductionRate);
-                        enemySize = Math.max(5, enemySize); // Ensure enemy size doesn't get too small
-                        console.log(`Enemy size reduced to ${enemySize.toFixed(2)}!`);
-                    }
-                    break;
-                }
-            }
-        }
-    }
-}
-                </code>
-            </div>
-
-            <div class="function-info">
-                <h4><code>checkCollisions()</code></h4>
-                <p>Checks for collisions between the player plane and any active enemy planes. If a collision occurs, the player loses a life, and the enemy is removed. If the player runs out of lives, <code>endRound()</code> is called.</p>
-                <p><span class="important">Note:</span> This function returns <code>true</code> if a collision occurs, but the return value is not currently used in the main game loop.</p>
-                <code>
-function checkCollisions() {
-    for (let i = 0; i &lt; enemyPlanes.length; i++) {
-        if (enemyPlanes[i].alive) {
-            const enemy = enemyPlanes[i];
-            const dx = playerPlane.x - (enemy.x + enemy.size / 2);
-            const dy = playerPlane.y - (enemy.y + enemy.size / 2);
-            const distance = Math.sqrt(dx * dx + dy *
+    <div class="section">
+        <h2>Game Initialization</h2>
+        <p>The game starts by printing a message to the console and then immediately calling the <code>updateGame()</code> and <code>spawnEnemies()</code> functions to begin the game loop and enemy spawning process.</p>
+        <pre><code>console.log("Game started in CodeHS environment.");
+updateGame(Date.now
